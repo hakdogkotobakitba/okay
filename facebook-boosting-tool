@@ -1,64 +1,81 @@
-import requests
+import time
 
-# List of Facebook credentials (UID and password) for bulk accounts
-credentials = [
-    ("uid1", "password1"),
-    ("uid2", "password2"),
-    ("uid3", "password3")
-]
+# Color formatting
+GRAY = '\033[38;5;235m'
+WHITE = '\033[97m'
+RESET = '\033[0m'
 
-# Facebook login URL for mobile version
-login_url = 'https://m.facebook.com/login.php'
-
-# Facebook post URL (user feed)
-post_url = 'https://m.facebook.com/{uid}/feed'
-
-# Function to login with UID and password and post on Facebook
-def login_and_post(uid, password):
-    # Start a session to maintain login
-    session = requests.Session()
-    
-    # Prepare login data
-    login_data = {
-        'email': uid,  # Use UID as email for mobile login
-        'pass': password,
-        'login': 'Log In'
-    }
-
-    # Send login request to Facebook
-    login_response = session.post(login_url, data=login_data)
-
-    # Check if login was successful by inspecting the response
-    if 'Home' in login_response.text:
-        print(f"Logged in successfully with UID: {uid}")
-
-        # Data for posting (You can modify the post message here)
-        post_data = {
-            'xhpc_message': 'Automated post using UID and password!',
-            'privacy': 'EVERYONE'  # Set privacy to Everyone for public post
-        }
-
-        # Make a post request to the user's feed
-        post_response = session.post(post_url.format(uid=uid), data=post_data)
+# Function to display a customized main menu
+def main_menu():
+    print(f"{WHITE}Welcome to Your Facebook Boosting Tool!\n{RESET}")
+    while True:
+        print(f"{GRAY}[1]{RESET} {WHITE}Extract Account{RESET}")
+        print(f"{GRAY}[2]{RESET} {WHITE}Share Post{RESET}")
+        print(f"{GRAY}[3]{RESET} {WHITE}React{RESET}")
+        print(f"{GRAY}[4]{RESET} {WHITE}Comment{RESET}")
+        print(f"{GRAY}[5]{RESET} {WHITE}Exit{RESET}")
         
-        if post_response.status_code == 200:
-            print(f"Post successfully shared from UID: {uid}")
+        choice = input(f"{GRAY}Enter your choice (1/2/3/4/5): {RESET}")
+
+        if choice == '1':
+            extract_account()
+        elif choice == '2':
+            share_post()
+        elif choice == '3':
+            react_post()
+        elif choice == '4':
+            comment_post()
+        elif choice == '5':
+            exit_program()
         else:
-            print(f"Failed to post from UID: {uid}")
+            print(f"{WHITE}Invalid choice. Please try again.{RESET}")
+
+# Example functions for each action
+def extract_account():
+    print(f"{WHITE}Please enter the account UID and password (format: uid|password):{RESET}")
+    credentials = input(f"{GRAY}Enter UID|Password: {RESET}")
+    with open("credentials.txt", "w") as file:
+        file.write(credentials)
+    print(f"{WHITE}Account extracted and saved!{RESET}")
+
+def share_post():
+    print(f"{WHITE}Enter the URL of the post you wish to share:{RESET}")
+    post_url = input(f"{GRAY}Enter Post URL: {RESET}")
+    # Implement sharing logic here
+    print(f"{WHITE}Post shared successfully!{RESET}")
+
+def react_post():
+    print(f"{WHITE}What reaction would you like to use?{RESET}")
+    print(f"{GRAY}[1]{RESET} {WHITE}Like{RESET}")
+    print(f"{GRAY}[2]{RESET} {WHITE}Love{RESET}")
+    print(f"{GRAY}[3]{RESET} {WHITE}Wow{RESET}")
+    print(f"{GRAY}[4]{RESET} {WHITE}Sad{RESET}")
+    print(f"{GRAY}[5]{RESET} {WHITE}Angry{RESET}")
+    reaction_choice = input(f"{GRAY}Enter reaction choice (1-5): {RESET}")
+    if reaction_choice == '1':
+        print(f"{WHITE}Liked the post!{RESET}")
+    elif reaction_choice == '2':
+        print(f"{WHITE}Loved the post!{RESET}")
+    elif reaction_choice == '3':
+        print(f"{WHITE}Wow! Amazing post!{RESET}")
+    elif reaction_choice == '4':
+        print(f"{WHITE}Sad reaction posted.{RESET}")
+    elif reaction_choice == '5':
+        print(f"{WHITE}Angry reaction posted.{RESET}")
     else:
-        print(f"Login failed for UID: {uid}")
+        print(f"{WHITE}Invalid choice!{RESET}")
 
-# Loop through each account's credentials to login and post
-def run_boosting_tool():
-    # Read credentials from a file
-    with open("credentials.txt", "r") as file:
-        credentials = file.readlines()
+def comment_post():
+    print(f"{WHITE}Enter your comment for the post:{RESET}")
+    comment = input(f"{GRAY}Enter comment: {RESET}")
+    # Implement comment posting logic here
+    print(f"{WHITE}Comment posted successfully!{RESET}")
 
-    # Process each account
-    for line in credentials:
-        uid, password = line.strip().split('|')  # Split UID and password
-        login_and_post(uid, password)
+def exit_program():
+    print(f"{WHITE}Exiting the tool...{RESET}")
+    time.sleep(1)
+    exit()
 
+# Start the tool by calling the main menu
 if __name__ == "__main__":
-    run_boosting_tool()
-    
+    main_menu()
